@@ -79,7 +79,7 @@ public class NewTabPanel {
         int numberOfPeriods = Integer.parseInt(numberOfPeriodTextField.getText());
         Object[][] data = new Object[numberOfPeriods][2];
         for(int i = 0; i < numberOfPeriods; i++)
-            data[i][0] = i;
+            data[i][0] = i+1;
         cashFlowTable.setModel(new DefaultTableModel(
             data, new String[]{"Number","Cash Flow"}
         ));
