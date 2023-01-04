@@ -6,7 +6,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 public class NewTabPanel {
     private JPanel initialInvestmentPanel;
@@ -25,63 +24,76 @@ public class NewTabPanel {
     private JPanel addPeriodsPanel;
     private JPanel headerPanel;
     private JButton addPeriodsButton;
+    private JButton npvButton;
+    private JPanel discountRatePanel;
+    private JLabel discountRateLabel;
+    private JTextField discountRateTextField;
 
-    private int numberOfCashFlow;
+    private NPVBean npvBean;
 
     public NewTabPanel() {
-        numberOfPeriodTextField.setText("0");
-        setCashFlowTable();
+        npvBean = new NPVBean();
+        setData(npvBean);
+        setCashFlowTable(null);
         addPeriodsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setCashFlowTable();
+                setCashFlowTable(null);
+            }
+        });
+        npvButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getData(npvBean);
+                float[] cashFlowValues = new float[Integer.parseInt(numberOfPeriodTextField.getText())];
+                for(int i = 0; i < cashFlowValues.length; i++){
+                    cashFlowValues[i] = Float.parseFloat((String) cashFlowTable.getValueAt(i,1));
+                }
+                npvBean.setCashFlowValues(cashFlowValues);
+                npvBean.calculateNPV();
+                setData(npvBean);
             }
         });
     }
 
     public JPanel getMainPanel(){ return mainPanel;}
 
-    public NewTabPanel getNewTabPanel(){return this;}
-
-    public void setNumberOfCashFlow(int number){
-        this.numberOfCashFlow = number;
+    public void setCashFlowTable(float[] cashFlowValues){
+        int numberOfPeriods = Integer.parseInt(numberOfPeriodTextField.getText());
+        Object[][] data = new Object[numberOfPeriods][2];
+        for(int i = 0; i < numberOfPeriods; i++){
+            data[i][0] = i+1;
+            if(cashFlowValues != null && i < cashFlowValues.length)
+                data[i][1] = cashFlowValues[i];
+        }
+        cashFlowTable.setModel(new DefaultTableModel(
+            data, new String[]{"Number","Cash Flow"}
+        ));
     }
 
-    public int getNumberOfCashFlow(){return numberOfCashFlow;}
-
     public void setData(NPVBean data) {
+        npvTextField.setText(data.getNpvValue());
         initialInvestmentTextField.setText(data.getInitialInvestment());
         numberOfPeriodTextField.setText(data.getNumberOfPeriod());
-        npvTextField.setText(data.getNpvValue());
+        discountRateTextField.setText(data.getDiscountRate());
     }
 
     public void getData(NPVBean data) {
+        data.setNpvValue(npvTextField.getText());
         data.setInitialInvestment(initialInvestmentTextField.getText());
         data.setNumberOfPeriod(numberOfPeriodTextField.getText());
-        data.setNpvValue(npvTextField.getText());
+        data.setDiscountRate(discountRateTextField.getText());
     }
 
     public boolean isModified(NPVBean data) {
+        if (npvTextField.getText() != null ? !npvTextField.getText().equals(data.getNpvValue()) : data.getNpvValue() != null)
+            return true;
         if (initialInvestmentTextField.getText() != null ? !initialInvestmentTextField.getText().equals(data.getInitialInvestment()) : data.getInitialInvestment() != null)
             return true;
         if (numberOfPeriodTextField.getText() != null ? !numberOfPeriodTextField.getText().equals(data.getNumberOfPeriod()) : data.getNumberOfPeriod() != null)
             return true;
-        if (npvTextField.getText() != null ? !npvTextField.getText().equals(data.getNpvValue()) : data.getNpvValue() != null)
+        if (discountRateTextField.getText() != null ? !discountRateTextField.getText().equals(data.getDiscountRate()) : data.getDiscountRate() != null)
             return true;
         return false;
-    }
-
-    public void removeCashFlow(int cashFlowIndex){
-        System.out.println("Remove Cash Flow n°"+cashFlowIndex);
-    }
-
-    public void setCashFlowTable(){
-        int numberOfPeriods = Integer.parseInt(numberOfPeriodTextField.getText());
-        Object[][] data = new Object[numberOfPeriods][2];
-        for(int i = 0; i < numberOfPeriods; i++)
-            data[i][0] = i+1;
-        cashFlowTable.setModel(new DefaultTableModel(
-            data, new String[]{"Number","Cash Flow"}
-        ));
     }
 }
