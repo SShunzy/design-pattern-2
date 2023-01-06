@@ -1,6 +1,6 @@
 package com.brynckmanthys.gui;
 
-import com.brynckmanthys.gui.actionlistener.CloseTabMouseListener;
+import com.brynckmanthys.gui.listener.CloseTabMouseListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -81,7 +81,7 @@ public class GuiApplication {
 
 
     private JPanel getNewTabComponent(){
-        JPanel panel = new NewTabPanel().getMainPanel();
+        JPanel panel = new NPVTabPanel().getMainPanel();
         panel.setSize(500,500);
         return panel;
     }
