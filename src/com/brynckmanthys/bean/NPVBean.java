@@ -1,5 +1,7 @@
 package com.brynckmanthys.bean;
 
+import com.brynckmanthys.interfaces.IRRAlgorithm;
+
 import java.util.ArrayList;
 
 public class NPVBean {
@@ -8,6 +10,8 @@ public class NPVBean {
     private float discountRate;
     private float npvValue;
     private float[] cashFlowValues;
+
+    private IRRAlgorithm irrStrategy;
 
     public NPVBean() {
         initialInvestment = 0;
@@ -42,6 +46,10 @@ public class NPVBean {
         this.numberOfPeriod = Integer.parseInt(numberOfPeriod);
     }
 
+    public void setIrrStrategy(IRRAlgorithm irrStrategy) {
+        this.irrStrategy = irrStrategy;
+    }
+
     public String getNpvValue() {
         return Float.toString(npvValue);
     }
@@ -57,9 +65,15 @@ public class NPVBean {
     public void calculateNPV(){
         float tempNPV = - initialInvestment;
         for(int i = 0; i < numberOfPeriod; i++){
+            System.out.println("tempNPV = "+ tempNPV);
             tempNPV += cashFlowValues[i] / Math.pow(1 + discountRate, i+1);
         }
+        System.out.println("finalNPV = "+tempNPV);
         this.npvValue = tempNPV;
+    }
+
+    public double calculateIRR(){
+        return irrStrategy.calculateIRR(this);
     }
 
     public void setCashFlowValues(float[] cashFlowValues) {

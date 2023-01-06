@@ -1,13 +1,15 @@
 package com.brynckmanthys.gui;
 
 import com.brynckmanthys.bean.NPVBean;
+import com.brynckmanthys.gui.listener.CashFlowComponentListener;
+import com.brynckmanthys.strategy.IRREcheanceMoyenneAlgorithm;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class NewTabPanel {
+public class NPVTabPanel {
     private JPanel initialInvestmentPanel;
     private JLabel initialInvestmentLabel;
     private JTextField initialInvestmentTextField;
@@ -28,10 +30,14 @@ public class NewTabPanel {
     private JPanel discountRatePanel;
     private JLabel discountRateLabel;
     private JTextField discountRateTextField;
+    private JPanel irrPanel;
+    private JLabel irrLabel;
+    private JTextField irrTextField;
+    private JButton IRRButton;
 
     private NPVBean npvBean;
 
-    public NewTabPanel() {
+    public NPVTabPanel() {
         npvBean = new NPVBean();
         setData(npvBean);
         setCashFlowTable(null);
@@ -45,12 +51,16 @@ public class NewTabPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 getData(npvBean);
-                float[] cashFlowValues = new float[Integer.parseInt(numberOfPeriodTextField.getText())];
-                for(int i = 0; i < cashFlowValues.length; i++){
-                    cashFlowValues[i] = Float.parseFloat((String) cashFlowTable.getValueAt(i,1));
-                }
-                npvBean.setCashFlowValues(cashFlowValues);
                 npvBean.calculateNPV();
+                setData(npvBean);
+            }
+        });
+        IRRButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getData(npvBean);
+                npvBean.setIrrStrategy(new IRREcheanceMoyenneAlgorithm());
+                irrTextField.setText(Double.toString(npvBean.calculateIRR()));
                 setData(npvBean);
             }
         });
@@ -69,6 +79,7 @@ public class NewTabPanel {
         cashFlowTable.setModel(new DefaultTableModel(
             data, new String[]{"Number","Cash Flow"}
         ));
+        cashFlowTable.getModel().addTableModelListener(new CashFlowComponentListener(npvBean,cashFlowTable));
     }
 
     public void setData(NPVBean data) {
