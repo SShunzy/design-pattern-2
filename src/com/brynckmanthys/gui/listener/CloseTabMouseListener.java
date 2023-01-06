@@ -1,4 +1,4 @@
-package com.brynckmanthys.gui.actionlistener;
+package com.brynckmanthys.gui.listener;
 
 import javax.swing.*;
 import java.awt.*;
