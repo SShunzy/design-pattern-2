@@ -2,6 +2,7 @@ package com.brynckmanthys.gui;
 
 import com.brynckmanthys.bean.NPVBean;
 import com.brynckmanthys.gui.listener.CashFlowComponentListener;
+import com.brynckmanthys.gui.listener.IRRMethodItemListener;
 import com.brynckmanthys.strategy.IRREcheanceMoyenneAlgorithm;
 
 import javax.swing.*;
@@ -34,6 +35,9 @@ public class NPVTabPanel {
     private JLabel irrLabel;
     private JTextField irrTextField;
     private JButton IRRButton;
+    private JPanel irrButtonPanel;
+    private JComboBox irrMethodComboBox;
+    private JLabel irrMethodLabel;
 
     private NPVBean npvBean;
 
@@ -59,11 +63,13 @@ public class NPVTabPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 getData(npvBean);
-                npvBean.setIrrStrategy(new IRREcheanceMoyenneAlgorithm());
                 irrTextField.setText(Double.toString(npvBean.calculateIRR()));
                 setData(npvBean);
             }
         });
+        irrMethodComboBox.addItem("Echéance Moyenne");
+        irrMethodComboBox.addItem("...");
+        irrMethodComboBox.addItemListener(new IRRMethodItemListener(npvBean));
     }
 
     public JPanel getMainPanel(){ return mainPanel;}
