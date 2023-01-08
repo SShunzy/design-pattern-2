@@ -1,6 +1,7 @@
 package com.brynckmanthys.bean;
 
 import com.brynckmanthys.interfaces.IRRAlgorithm;
+import com.brynckmanthys.strategy.IRREcheanceMoyenneAlgorithm;
 
 import java.util.ArrayList;
 
@@ -19,7 +20,7 @@ public class NPVBean {
         discountRate = 0;
         npvValue = 0;
         cashFlowValues = null;
-
+        irrStrategy = new IRREcheanceMoyenneAlgorithm();
     }
 
     public String getInitialInvestment() {
