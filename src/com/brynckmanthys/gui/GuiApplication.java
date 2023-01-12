@@ -1,8 +1,11 @@
 package com.brynckmanthys.gui;
 
+import com.brynckmanthys.bean.NPVBean;
 import com.brynckmanthys.gui.listener.CloseTabMouseListener;
+import com.brynckmanthys.visitor.CSVImportVisitor;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -81,7 +84,7 @@ public class GuiApplication {
 
 
     private JPanel getNewTabComponent(){
-        JPanel panel = new NPVTabPanel().getMainPanel();
+        JPanel panel = new NPVTabPanel(new NPVBean()).getMainPanel();
         panel.setSize(500,500);
         return panel;
     }
@@ -92,7 +95,29 @@ public class GuiApplication {
     }
 
     private void importAction(){
-        System.out.println("Import from file");
+        JFileChooser jFileChooser = new JFileChooser(
+                FileSystemView
+                        .getFileSystemView()
+                        .getHomeDirectory()
+        );
+
+        int res = jFileChooser.showOpenDialog(null);
+
+        if (res == JFileChooser.APPROVE_OPTION) {
+            importFile(jFileChooser.getSelectedFile().getPath());
+        }
+    }
+
+    private void importFile(String path) {
+        NPVBean npvBean = new NPVBean();
+        npvBean.accept(new CSVImportVisitor(), path);
+
+        JPanel panel = new NPVTabPanel(npvBean).getMainPanel();
+        panel.setSize(500,500);
+
+        String tabTitle = npvBean.getProjectTitle();
+        tabbedPane1.addTab(tabTitle, panel);
+        addCloseTab(tabTitle);
     }
 
     public static void main(String[] args) {

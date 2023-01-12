@@ -1,6 +1,6 @@
-package com.brynckmanthys.classes;
+package com.brynckmanthys.interfaces;
 
-import com.brynckmanthys.utils.file.FileVisitor;
+import com.brynckmanthys.visitor.FileVisitor;
 
 public interface IProject {
     Boolean accept(FileVisitor visitor, String path);

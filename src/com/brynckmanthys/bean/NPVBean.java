@@ -1,11 +1,12 @@
 package com.brynckmanthys.bean;
 
+import com.brynckmanthys.interfaces.IProject;
 import com.brynckmanthys.interfaces.IRRAlgorithm;
 import com.brynckmanthys.strategy.IRREcheanceMoyenneAlgorithm;
+import com.brynckmanthys.visitor.FileVisitor;
 
-import java.util.ArrayList;
-
-public class NPVBean {
+public class NPVBean implements IProject {
+    private String projectTitle;
     private float initialInvestment;
     private int numberOfPeriod;
     private float discountRate;
@@ -15,6 +16,7 @@ public class NPVBean {
     private IRRAlgorithm irrStrategy;
 
     public NPVBean() {
+        projectTitle = "New project";
         initialInvestment = 0;
         numberOfPeriod = 0;
         discountRate = 0;
@@ -45,6 +47,10 @@ public class NPVBean {
 
     public void setNumberOfPeriod(final String numberOfPeriod) {
         this.numberOfPeriod = Integer.parseInt(numberOfPeriod);
+    }
+
+    public void setNumberOfPeriod(int numberOfPeriod) {
+        this.numberOfPeriod = numberOfPeriod;
     }
 
     public void setIrrStrategy(IRRAlgorithm irrStrategy) {
@@ -79,5 +85,18 @@ public class NPVBean {
 
     public void setCashFlowValues(float[] cashFlowValues) {
         this.cashFlowValues = cashFlowValues;
+    }
+
+    @Override
+    public Boolean accept(FileVisitor visitor, String path) {
+        return visitor.visitNPVBean(this, path);
+    }
+
+    public String getProjectTitle() {
+        return projectTitle;
+    }
+
+    public void setProjectTitle(String projectTitle) {
+        this.projectTitle = projectTitle;
     }
 }

@@ -41,10 +41,9 @@ public class NPVTabPanel {
 
     private NPVBean npvBean;
 
-    public NPVTabPanel() {
-        npvBean = new NPVBean();
+    public NPVTabPanel(NPVBean npvBean) {
         setData(npvBean);
-        setCashFlowTable(null);
+        setCashFlowTable(npvBean.getCashFlowValues());
         addPeriodsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
