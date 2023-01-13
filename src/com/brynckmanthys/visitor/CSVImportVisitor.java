@@ -27,8 +27,8 @@ public class CSVImportVisitor implements FileVisitor {
             }
 
             ArrayList<Float> cashFlowValues = new ArrayList<>();
-            while (scanner.hasNextFloat()) {
-                cashFlowValues.add(scanner.nextFloat());
+            while (scanner.hasNext()) {
+                cashFlowValues.add(Float.parseFloat(scanner.next()));
             }
 
             float[] cashFlowArray = new float[cashFlowValues.size()];

@@ -3,7 +3,6 @@ package com.brynckmanthys.gui;
 import com.brynckmanthys.bean.NPVBean;
 import com.brynckmanthys.gui.listener.CashFlowComponentListener;
 import com.brynckmanthys.gui.listener.IRRMethodItemListener;
-import com.brynckmanthys.strategy.IRREcheanceMoyenneAlgorithm;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

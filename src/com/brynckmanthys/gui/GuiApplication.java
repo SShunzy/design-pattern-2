@@ -2,6 +2,7 @@ package com.brynckmanthys.gui;
 
 import com.brynckmanthys.bean.NPVBean;
 import com.brynckmanthys.gui.listener.CloseTabMouseListener;
+import com.brynckmanthys.visitor.CSVExportVisitor;
 import com.brynckmanthys.visitor.CSVImportVisitor;
 
 import javax.swing.*;
@@ -9,6 +10,7 @@ import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class GuiApplication {
     private JTabbedPane tabbedPane1;
@@ -16,6 +18,8 @@ public class GuiApplication {
     private JPanel menuPanel;
     private JButton addButton;
     private JMenuBar menuBar;
+
+    private final ArrayList<NPVBean> npvBeanList = new ArrayList<>();
 
     public GuiApplication() {
         initMenu();
@@ -36,7 +40,7 @@ public class GuiApplication {
         JLabel lblTitle = new JLabel(title);
         JLabel tempLabel = new JLabel("   ");
         JLabel closeLabel = new JLabel(" X ");
-        closeLabel.addMouseListener(new CloseTabMouseListener(title,tabbedPane1,closeLabel));
+        closeLabel.addMouseListener(new CloseTabMouseListener(title,tabbedPane1,closeLabel, npvBeanList));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -84,14 +88,31 @@ public class GuiApplication {
 
 
     private JPanel getNewTabComponent(){
-        JPanel panel = new NPVTabPanel(new NPVBean()).getMainPanel();
+        NPVBean npvBean = new NPVBean();
+        JPanel panel = new NPVTabPanel(npvBean).getMainPanel();
         panel.setSize(500,500);
+        npvBeanList.add(npvBean);
         return panel;
     }
 
 
     private void exportAction(){
-        System.out.println("Export to file");
+        JFileChooser jFileChooser = new JFileChooser(
+                FileSystemView
+                        .getFileSystemView()
+                        .getHomeDirectory()
+        );
+
+        int res = jFileChooser.showOpenDialog(null);
+
+        if (res == JFileChooser.APPROVE_OPTION) {
+            exportFile(jFileChooser.getSelectedFile().getPath());
+        }
+    }
+
+    private void exportFile(String path) {
+        NPVBean npvBean = npvBeanList.get(tabbedPane1.getSelectedIndex() - 1);
+        npvBean.accept(new CSVExportVisitor(), path);
     }
 
     private void importAction(){
@@ -117,6 +138,7 @@ public class GuiApplication {
 
         String tabTitle = npvBean.getProjectTitle();
         tabbedPane1.addTab(tabTitle, panel);
+        npvBeanList.add(npvBean);
         addCloseTab(tabTitle);
     }
 
