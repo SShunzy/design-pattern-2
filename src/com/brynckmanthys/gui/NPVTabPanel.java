@@ -8,6 +8,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class NPVTabPanel {
     private JPanel initialInvestmentPanel;
@@ -41,6 +43,7 @@ public class NPVTabPanel {
     private NPVBean npvBean;
 
     public NPVTabPanel(NPVBean npvBean) {
+        this.npvBean = npvBean;
         setData(npvBean);
         setCashFlowTable(npvBean.getCashFlowValues());
         addPeriodsButton.addActionListener(new ActionListener() {
@@ -68,6 +71,21 @@ public class NPVTabPanel {
         irrMethodComboBox.addItem("Echéance Moyenne");
         irrMethodComboBox.addItem("...");
         irrMethodComboBox.addItemListener(new IRRMethodItemListener(npvBean));
+
+        initialInvestmentTextField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                super.focusLost(e);
+                getData(npvBean);
+            }
+        });
+        discountRateTextField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                super.focusLost(e);
+                getData(npvBean);
+            }
+        });
     }
 
     public JPanel getMainPanel(){ return mainPanel;}
